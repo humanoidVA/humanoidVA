@@ -4,48 +4,59 @@ import google.generativeai as genai
 from gtts import gTTS
 import pygame
 
-# Configure API key
-genai.configure(api_key=credentials.api_key)
+def main():
+    try:
+        # Configure API key
+        genai.configure(api_key=credentials.api_key)
 
-# Define generation configuration for the model
-generation_config = {
-    "temperature": 0.7,
-    "top_p": 0.95,
-    "top_k": 64,
-    "max_output_tokens": 8192,
-    "response_mime_type": "text/plain",
-}
+        # Define generation configuration for the model
+        generation_config = {
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "top_k": 64,
+            "max_output_tokens": 8192,
+            "response_mime_type": "text/plain",
+        }
 
-# Create and configure the model
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    generation_config=generation_config,
-)
+        # Create and configure the model
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            generation_config=generation_config,
+        )
 
-# Start a chat session
-chat_session = model.start_chat(history=[])
+        # Start a chat session
+        chat_session = model.start_chat(history=[])
 
-# Send message and get response
-response = chat_session.send_message("What is the capital of Nepal?")
+        # Get user input
+        user_input = input("Ask your question: ")
 
-# Print text response
-print(response.text)
+        # Send user input to the model and get response
+        response = chat_session.send_message(user_input)
 
-# Convert the response text to speech using gTTS
-tts = gTTS(response.text)
+        # Print text response
+        print(response.text)
 
-# Save the audio file
-audio_file = "response.mp3"
-tts.save(audio_file)
+        # Convert the response text to speech using gTTS
+        tts = gTTS(response.text)
 
-# Initialize pygame mixer and play the audio file
-pygame.mixer.init()
-pygame.mixer.music.load(audio_file)
-pygame.mixer.music.play()
+        # Save the audio file
+        audio_file = "response.mp3"
+        tts.save(audio_file)
 
-# Keep the script alive until the audio finishes playing
-while pygame.mixer.music.get_busy():
-    pass
+        # Initialize pygame mixer and play the audio file
+        pygame.mixer.init()
+        pygame.mixer.music.load(audio_file)
+        pygame.mixer.music.play()
 
-# Optionally, remove the audio file after playing
-os.remove(audio_file)
+        # Keep the script alive until the audio finishes playing
+        while pygame.mixer.music.get_busy():
+            pass
+
+        # Optionally, remove the audio file after playing
+        os.remove(audio_file)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
