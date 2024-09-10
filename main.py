@@ -3,8 +3,12 @@ import os
 import google.generativeai as genai
 from gtts import gTTS
 import pygame
+import speech_recognition as sr
+import re
 
 def main():
+    recognizer = sr.Recognizer()
+
     try:
         # Configure API key
         genai.configure(api_key=credentials.api_key)
@@ -27,33 +31,50 @@ def main():
         # Start a chat session
         chat_session = model.start_chat(history=[])
 
-        # Get user input
-        user_input = input("Ask your question: ")
+        # Use the microphone to capture voice input
+        with sr.Microphone() as source:
+            print("Adjusting for ambient noise...")
+            recognizer.adjust_for_ambient_noise(source)
+            print("Listening...")
+            audio = recognizer.listen(source)
 
-        # Send user input to the model and get response
-        response = chat_session.send_message(user_input)
+        # Recognize speech using Google's speech recognition
+        try:
+            user_input = recognizer.recognize_google(audio)
+            print(f"You said: {user_input}")
 
-        # Print text response
-        print(response.text)
+            # Send user input to the model and get response
+            response = chat_session.send_message(user_input)
 
-        # Convert the response text to speech using gTTS
-        tts = gTTS(response.text)
+            # Clean up the response text by removing asterisks and other unwanted symbols
+            cleaned_text = re.sub(r'[*]', '', response.text)
 
-        # Save the audio file
-        audio_file = "response.mp3"
-        tts.save(audio_file)
+            # Print cleaned text response
+            print(cleaned_text)
 
-        # Initialize pygame mixer and play the audio file
-        pygame.mixer.init()
-        pygame.mixer.music.load(audio_file)
-        pygame.mixer.music.play()
+            # Convert the cleaned response text to speech using gTTS
+            tts = gTTS(cleaned_text)
 
-        # Keep the script alive until the audio finishes playing
-        while pygame.mixer.music.get_busy():
-            pass
+            # Save the audio file
+            audio_file = "response.mp3"
+            tts.save(audio_file)
 
-        # Optionally, remove the audio file after playing
-        os.remove(audio_file)
+            # Initialize pygame mixer and play the audio file
+            pygame.mixer.init()
+            pygame.mixer.music.load(audio_file)
+            pygame.mixer.music.play()
+
+            # Keep the script alive until the audio finishes playing
+            while pygame.mixer.music.get_busy():
+                pass
+
+            # Optionally, remove the audio file after playing
+            os.remove(audio_file)
+
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand the audio")
+        except sr.RequestError as e:
+            print(f"Could not request results from Google Speech Recognition service; {e}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
