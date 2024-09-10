@@ -42,7 +42,8 @@ def main():
             try:
                 with sr.Microphone() as source:
                     print("Listening...")
-                    audio = recognizer.listen(source)
+                    # Set timeout and phrase_time_limit for faster response
+                    audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
 
                 # Recognize speech using Google's speech recognition
                 try:
