@@ -49,6 +49,11 @@ def main():
                     user_input = recognizer.recognize_google(audio)
                     print(f"You said: {user_input}")
 
+                    # Check if the user said "shut down" to exit the program
+                    if "shut down" in user_input.lower():
+                        print("Shutting down...")
+                        break
+
                     response_length = 40
 
                     # Send user input to the model and get response
