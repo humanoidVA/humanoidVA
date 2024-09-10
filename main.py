@@ -42,9 +42,11 @@ def main():
         try:
             user_input = recognizer.recognize_google(audio)
             print(f"You said: {user_input}")
+            
+            response_length=40
 
             # Send user input to the model and get response
-            response = chat_session.send_message(user_input)
+            response = chat_session.send_message(user_input + f"less than {response_length} words")
 
             # Clean up the response text by removing asterisks and other unwanted symbols
             cleaned_text = re.sub(r'[*]', '', response.text)
