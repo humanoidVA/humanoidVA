@@ -1,1 +1,2 @@
 api_key="AIzaSyDp_BX4OM2Djdlsc0vYVFqcqo_iF8OQJ7w"
+elevenlabs_api_key="sk_0efda6d669c64d66159851cdca67e4e1e1797c8d9347fbbd"

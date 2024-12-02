@@ -1,0 +1,14 @@
+[Unit]
+Description=HumanoidVA Startup Service
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'source ~/Desktop/humanoidVA-main/.venv/bin/activate && export SDL_AUDIODRIVER=dummy && python ~/Desktop/humanoidVA-main/main.py'
+Restart=always
+User=humanoid
+WorkingDirectory=~/Desktop/humanoidVA-main
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=multi-user.target

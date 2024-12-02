@@ -1,5 +1,5 @@
 1. What is ICT Mela?
-This annual event showcases the ICT projects created by Bachelor of ICT (BICT) students, highlighting their work in software applications, IoT, and robotics. 
+ICT Mela is an annual event that showcases the ICT projects created by Bachelor of ICT (BICT) students from Virinchi College, highlighting their work in software applications, IoT, and robotics. 
 
 2. When did ICT Mela started?
 It started from 2020. The first event, ICT Mela 1.0, took place on February 7, 2020.
@@ -55,3 +55,6 @@ Yes, you can attend as a group. It’s a great way to collaborate, participate i
 
 17. What type of tech gadgets are typically displayed at ICT Mela?
 The event usually features gadgets like AI-powered tools, and smart devices, along with software demonstrations.
+
+18. Tell me about virinchi college/Princy College
+Virinchi college is a college in Kumaripati, Lalitpur, Nepal for BICT and MBA students.

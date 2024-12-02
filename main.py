@@ -5,19 +5,25 @@ from gtts import gTTS
 import pygame
 import speech_recognition as sr
 import re
+import tempfile  # Import for temporary file handling
 
 def introduce():
     """Introduce the assistant at the start."""
-    intro_text = "Hello! I am Jarvis, an AI assistant. How can I help you today?"
+    intro_text = "Namaste! I am Jarvis, an AI assistant. How can I help you today?"
     print(intro_text)
     tts = gTTS(intro_text)
-    audio_file = "intro.mp3"
-    tts.save(audio_file)
+    
+    # Use a temporary file to store the audio
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_audio:
+        audio_file = temp_audio.name
+        tts.save(audio_file)
+
     pygame.mixer.music.load(audio_file)
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():
         pass
-    os.remove(audio_file)
+    
+    os.remove(audio_file)  # Delete the temporary file after use
 
 def load_faq(file_path):
     """Load FAQ data from a text file into a dictionary."""
@@ -47,9 +53,9 @@ def answer_faq(user_input, faq):
 def generate_ai_response(chat_session, user_input):
     """Generate a response using the AI model."""
     try:
-        response_length = 40
+        response_length = 40  # Limit response to 40 words
         response = chat_session.send_message(user_input + f" less than {response_length} words")
-        cleaned_text = re.sub(r'[*]', '', response.text)
+        cleaned_text = re.sub(r'[*]', '', response.text)  # Remove unwanted characters if any
         return cleaned_text
     except Exception as e:
         print(f"Error generating AI response: {e}")
@@ -57,12 +63,12 @@ def generate_ai_response(chat_session, user_input):
 
 def main():
     recognizer = sr.Recognizer()
-    faq_file = "ICTMela.txt"
+    faq_file = "/home/humanoid/Desktop/humanoidVA-main/ICTMela.txt"
     faq_data = load_faq(faq_file)
 
     try:
         # Configure API key
-        genai.configure(api_key=credentials.api_key)  # Retained your original API key configuration
+        genai.configure(api_key=credentials.api_key)  # Use your existing credentials
 
         # Define generation configuration for the model
         generation_config = {
@@ -115,16 +121,19 @@ def main():
                     else:
                         print("Generating AI response...")
                         answer = generate_ai_response(chat_session, user_input)
+                        print(f"Response: {answer}")
 
-                    tts = gTTS(answer)
-                    audio_file = "response.mp3"
-                    tts.save(audio_file)
+                    # Use a temporary file for audio response
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_audio:
+                        audio_file = temp_audio.name
+                        tts = gTTS(answer)
+                        tts.save(audio_file)
 
                     pygame.mixer.music.load(audio_file)
                     pygame.mixer.music.play()
                     while pygame.mixer.music.get_busy():
                         pass
-                    os.remove(audio_file)
+                    os.remove(audio_file)  # Clean up temporary file
 
                 except sr.UnknownValueError:
                     print("Sorry, I could not understand the audio. Please try again.")
